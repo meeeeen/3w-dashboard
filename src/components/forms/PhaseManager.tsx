@@ -33,6 +33,7 @@ import { Plus, Trash2, GripVertical, Check, Diamond } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { MemberPicker } from "./MemberPicker";
 
 type PhaseData = Omit<ProjectPhase, "id" | "project_id" | "created_at"> & {
   id?: string;
@@ -53,6 +54,7 @@ const EMPTY_PHASE: Omit<PhaseData, "sort_order"> = {
   end_date: "",
   progress: 0,
   status: "planning" as ProjectStatus,
+  assignee_ids: [],
 };
 
 export function PhaseManager({
@@ -98,6 +100,7 @@ export function PhaseManager({
       end_date: phase.end_date,
       progress: phase.progress,
       status: phase.status,
+      assignee_ids: phase.assignee_ids ?? [],
     });
     setDialogOpen(true);
   };
@@ -309,11 +312,25 @@ export function PhaseManager({
                                       {PROJECT_STATUS[phase.status]?.label}
                                     </Badge>
                                   </div>
-                                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                                    {format(parseISO(phase.start_date), "MM.dd", { locale: ko })}
-                                    {" ~ "}
-                                    {format(parseISO(phase.end_date), "MM.dd", { locale: ko })}
-                                  </p>
+                                  <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
+                                    <span>
+                                      {format(parseISO(phase.start_date), "MM.dd", { locale: ko })}
+                                      {" ~ "}
+                                      {format(parseISO(phase.end_date), "MM.dd", { locale: ko })}
+                                    </span>
+                                    {!readOnly && (
+                                      <MemberPicker
+                                        selectedIds={phase.assignee_ids ?? []}
+                                        onChange={(ids) => {
+                                          const updated = [...sortedPhases];
+                                          updated[index] = { ...updated[index], assignee_ids: ids };
+                                          onChange(updated.map((p, i) => ({ ...p, sort_order: i })));
+                                        }}
+                                        placeholder="담당자"
+                                        compact
+                                      />
+                                    )}
+                                  </div>
                                 </div>
 
                                 {!readOnly && (
@@ -518,6 +535,16 @@ export function PhaseManager({
                   </div>
                 </>
               )}
+              <div className="space-y-2">
+                <Label>담당자</Label>
+                <MemberPicker
+                  selectedIds={editForm.assignee_ids ?? []}
+                  onChange={(ids) =>
+                    setEditForm((prev) => ({ ...prev, assignee_ids: ids }))
+                  }
+                  placeholder="담당자 배정"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDialogOpen(false)}>

@@ -6,7 +6,7 @@ import { SEED_PROJECTS } from "@/data/seed";
 
 const STORAGE_KEY = "3w-dashboard-projects";
 const SEED_VERSION_KEY = "3w-dashboard-seed-version";
-const CURRENT_SEED_VERSION = "2"; // 시드 데이터 변경 시 올리기
+const CURRENT_SEED_VERSION = "3"; // 시드 데이터 변경 시 올리기
 
 function getStoredProjects(): ProjectWithDetails[] {
   if (typeof window === "undefined") return SEED_PROJECTS;

@@ -17,7 +17,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PROJECT_STATUS, PROJECT_CATEGORY, PRIORITY } from "@/utils/constants";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
+import { useMembers } from "@/hooks/useMembers";
 import { PhaseManager } from "./PhaseManager";
+import { MemberPicker } from "./MemberPicker";
 import {
   PHASE_TEMPLATES,
   generatePhasesFromTemplate,
@@ -41,6 +43,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const router = useRouter();
   const createProject = useCreateProject();
   const updateProject = useUpdateProject();
+  const { data: allMembers = [] } = useMembers();
 
   const [form, setForm] = useState({
     name: project?.name ?? "",
@@ -54,6 +57,10 @@ export function ProjectForm({ project }: ProjectFormProps) {
     pm_id: project?.pm_id ?? null,
   });
 
+  const [memberIds, setMemberIds] = useState<string[]>(
+    project?.members?.map((m) => m.profile_id) ?? []
+  );
+
   const [phases, setPhases] = useState<PhaseData[]>(
     project?.phases?.map((p) => ({
       id: p.id,
@@ -64,6 +71,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
       progress: p.progress,
       status: p.status,
       sort_order: p.sort_order,
+      assignee_ids: p.assignee_ids ?? [],
     })) ?? []
   );
 
@@ -89,11 +97,26 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const pmProfile = allMembers.find((m) => m.id === form.pm_id) ?? null;
+    const membersData = memberIds.map((mid) => {
+      const profile = allMembers.find((m) => m.id === mid);
+      return {
+        id: crypto.randomUUID(),
+        project_id: isEdit ? project.id : "",
+        profile_id: mid,
+        role: mid === form.pm_id ? "PM" : "멤버",
+        created_at: new Date().toISOString(),
+        profile,
+      };
+    });
+
     if (isEdit) {
       await updateProject.mutateAsync({
         id: project.id,
         data: {
           ...form,
+          pm: pmProfile,
+          members: membersData,
           phases: phases.map((p, i) => ({
             id: p.id ?? crypto.randomUUID(),
             project_id: project.id,
@@ -104,6 +127,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
             progress: p.progress,
             status: p.status,
             sort_order: i,
+            assignee_ids: p.assignee_ids ?? [],
             created_at: new Date().toISOString(),
           })),
         },
@@ -111,7 +135,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
     } else {
       await createProject.mutateAsync({
         ...form,
-        phases,
+        phases: phases.map((p) => ({ ...p, assignee_ids: p.assignee_ids ?? [] })),
       });
     }
 
@@ -248,6 +272,54 @@ export function ProjectForm({ project }: ProjectFormProps) {
                 </span>
               </div>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">팀 배정</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>담당 PM</Label>
+            <Select
+              value={form.pm_id ?? "none"}
+              onValueChange={(v) => {
+                if (v) {
+                  const pmId = v === "none" ? null : v;
+                  setForm((prev) => ({ ...prev, pm_id: pmId }));
+                  if (pmId && !memberIds.includes(pmId)) {
+                    setMemberIds((prev) => [...prev, pmId]);
+                  }
+                }
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue>
+                  {form.pm_id
+                    ? allMembers.find((m) => m.id === form.pm_id)?.name ?? "선택"
+                    : "미배정"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">미배정</SelectItem>
+                {allMembers.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.name} ({m.department})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>프로젝트 멤버</Label>
+            <MemberPicker
+              selectedIds={memberIds}
+              onChange={setMemberIds}
+              placeholder="멤버 추가"
+            />
           </div>
         </CardContent>
       </Card>

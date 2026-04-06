@@ -84,6 +84,7 @@ export function generatePhasesFromTemplate(
       progress: 0,
       status: "planning" as ProjectStatus,
       sort_order: index,
+      assignee_ids: [],
     };
   });
 }

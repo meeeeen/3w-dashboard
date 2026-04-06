@@ -36,6 +36,7 @@ export interface ProjectPhase {
   progress: number;
   status: ProjectStatus;
   sort_order: number;
+  assignee_ids: string[];
   created_at: string;
 }
 

@@ -44,6 +44,7 @@ export default function ProjectDetailPage({
           progress: p.progress,
           status: p.status,
           sort_order: i,
+          assignee_ids: p.assignee_ids ?? [],
           created_at: new Date().toISOString(),
         })),
       },
@@ -128,6 +129,7 @@ export default function ProjectDetailPage({
                 progress: p.progress,
                 status: p.status,
                 sort_order: p.sort_order,
+                assignee_ids: p.assignee_ids ?? [],
               })) ?? []
             }
             projectStartDate={project.start_date}
