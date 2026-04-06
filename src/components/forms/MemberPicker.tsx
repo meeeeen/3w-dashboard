@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useMembers } from "@/hooks/useMembers";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -72,20 +71,18 @@ export function MemberPicker({
         </Badge>
       ))}
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger>
-          <Button
-            type="button"
-            variant="ghost"
-            size={compact ? "icon" : "sm"}
-            className={cn(
-              compact ? "h-5 w-5" : "h-7 text-xs text-muted-foreground"
-            )}
-          >
-            <UserPlus size={compact ? 10 : 14} />
-            {!compact && selectedIds.length === 0 && (
-              <span className="ml-1">{placeholder}</span>
-            )}
-          </Button>
+        <PopoverTrigger
+          className={cn(
+            "inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground",
+            compact
+              ? "h-5 w-5"
+              : "h-7 px-2 text-xs text-muted-foreground gap-1"
+          )}
+        >
+          <UserPlus size={compact ? 10 : 14} />
+          {!compact && selectedIds.length === 0 && (
+            <span>{placeholder}</span>
+          )}
         </PopoverTrigger>
         <PopoverContent className="w-56 p-2" align="start">
           <Input
