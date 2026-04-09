@@ -1,21 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
-import { GanttTimeline } from "@/components/dashboard/GanttTimeline";
-import { SummaryCards } from "@/components/dashboard/SummaryCards";
-import { FilterBar, type ViewMode } from "@/components/dashboard/FilterBar";
-import type { ProjectStatus, ProjectCategory } from "@/utils/constants";
+import { KpiSummaryCards } from "@/components/dashboard/KpiSummaryCards";
+import { OkrTracker } from "@/components/dashboard/OkrTracker";
+import { EventFeed } from "@/components/dashboard/EventFeed";
+import { RevenueChart } from "@/components/dashboard/RevenueChart";
+import { RevenuePieChart } from "@/components/dashboard/RevenuePieChart";
+import { PlatformKpiCards } from "@/components/dashboard/PlatformKpiCards";
+import { ProjectStatusChart } from "@/components/dashboard/ProjectStatusChart";
+import { UpcomingMilestones } from "@/components/dashboard/UpcomingMilestones";
+import { CohortAnalysis } from "@/components/dashboard/CohortAnalysis";
 
 export default function DashboardPage() {
   const { data: projects, isLoading } = useProjects();
-  const [statusFilter, setStatusFilter] = useState<ProjectStatus | "all">(
-    "all"
-  );
-  const [categoryFilter, setCategoryFilter] = useState<
-    ProjectCategory | "all"
-  >("all");
-  const [viewMode, setViewMode] = useState<ViewMode>("quarter");
 
   if (isLoading || !projects) {
     return (
@@ -27,26 +24,34 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <SummaryCards projects={projects} />
+      {/* 상단 요약 카드 */}
+      <KpiSummaryCards projects={projects} />
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">프로젝트 타임라인</h2>
-        <FilterBar
-          statusFilter={statusFilter}
-          categoryFilter={categoryFilter}
-          viewMode={viewMode}
-          onStatusChange={setStatusFilter}
-          onCategoryChange={setCategoryFilter}
-          onViewModeChange={setViewMode}
-        />
+      {/* 매출 차트 */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <RevenueChart />
+        </div>
+        <RevenuePieChart />
       </div>
 
-      <GanttTimeline
-        projects={projects}
-        viewMode={viewMode}
-        statusFilter={statusFilter}
-        categoryFilter={categoryFilter}
-      />
+      {/* 플랫폼 KPI */}
+      <PlatformKpiCards />
+
+      {/* 코호트 리텐션 분석 */}
+      <CohortAnalysis />
+
+      {/* 프로젝트 현황 + 마일스톤 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ProjectStatusChart projects={projects} />
+        <UpcomingMilestones projects={projects} />
+      </div>
+
+      {/* OKR 트래커 + 이벤트 피드 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <OkrTracker />
+        <EventFeed />
+      </div>
     </div>
   );
 }

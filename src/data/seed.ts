@@ -4,7 +4,7 @@ export const SEED_PROJECTS: ProjectWithDetails[] = [
   // ===== 자사 프로젝트 =====
   {
     id: "1",
-    name: "WorkB",
+    name: "WiTiM",
     description: "B2B 통합 업무관리 플랫폼 (HR SaaS) — 데스크탑 웹 4월 중 오픈, 데스크탑 앱/모바일 앱 5월 중 오픈",
     status: "development",
     category: "internal",

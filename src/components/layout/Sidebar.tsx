@@ -3,18 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
   FolderKanban,
   Plus,
   ChevronLeft,
   ChevronRight,
+  BarChart3,
+  Wallet,
+  UsersRound,
+  Briefcase,
+  ShieldAlert,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "대시보드", icon: LayoutDashboard },
-  { href: "/projects", label: "프로젝트 목록", icon: FolderKanban },
+  { href: "/", label: "대시보드", icon: BarChart3 },
+  { href: "/projects", label: "프로젝트", icon: FolderKanban },
+  { href: "/finance", label: "경영 현황", icon: Wallet },
+  { href: "/team", label: "조직/인력", icon: UsersRound },
+  { href: "/portfolio", label: "사업 포트폴리오", icon: Briefcase },
+  { href: "/risks", label: "리스크 관리", icon: ShieldAlert },
   { href: "/projects/new", label: "프로젝트 등록", icon: Plus },
 ];
 
@@ -37,7 +45,7 @@ export function Sidebar() {
                 3W
               </span>
             </div>
-            <span className="font-semibold text-sm">프로젝트 대시보드</span>
+            <span className="font-semibold text-sm">통합 대시보드</span>
           </Link>
         )}
         <button

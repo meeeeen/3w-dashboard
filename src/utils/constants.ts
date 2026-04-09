@@ -4,6 +4,8 @@ export const PROJECT_STATUS = {
   operation: { label: "운영", color: "bg-green-100 text-green-700 border-green-200" },
   hold: { label: "보류", color: "bg-gray-100 text-gray-500 border-gray-200" },
   completed: { label: "완료", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  progress: { label: "진행", color: "bg-cyan-100 text-cyan-700 border-cyan-200" },
+  exploration: { label: "탐색", color: "bg-amber-100 text-amber-700 border-amber-200" },
 } as const;
 
 export const PROJECT_CATEGORY = {
@@ -11,6 +13,7 @@ export const PROJECT_CATEGORY = {
   outsource: { label: "외주", color: "#F59E0B" },
   government: { label: "정부협력", color: "#10B981" },
   medical: { label: "의료플랫폼", color: "#EF4444" },
+  overseas: { label: "해외", color: "#8B5CF6" },
 } as const;
 
 export const PRIORITY = {
