@@ -72,7 +72,7 @@ export function OutsourceProfitability() {
   const saveProjects = useCallback((updated: ProjectProfit[]) => {
     setProjects(updated);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent("finance-revenue-updated"));
+    setTimeout(() => window.dispatchEvent(new CustomEvent("finance-revenue-updated")), 0);
   }, []);
 
   const handleChange = (

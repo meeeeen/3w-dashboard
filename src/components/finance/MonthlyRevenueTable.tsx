@@ -36,7 +36,7 @@ function getStoredRevenue(): MonthlyRevenue[] {
 
 function saveRevenue(data: MonthlyRevenue[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  window.dispatchEvent(new CustomEvent("finance-revenue-updated"));
+  setTimeout(() => window.dispatchEvent(new CustomEvent("finance-revenue-updated")), 0);
 }
 
 export function MonthlyRevenueTable() {
